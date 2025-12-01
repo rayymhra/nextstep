@@ -529,7 +529,7 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
+                
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
@@ -558,133 +558,139 @@
                             </a>
                         </li>
                     </ul>
-
+                    
                     <ul class="navbar-nav ms-auto">
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link btn btn-outline me-2" href="{{ route('login') }}">
-                                    <i class="fas fa-sign-in-alt me-1"></i>Login
-                                </a>
-                            </li>
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link btn btn-primary" href="{{ route('register') }}">
-                                        <i class="fas fa-user-plus me-1"></i>Register
-                                    </a>
-                                </li>
-                            @endif
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline me-2" href="{{ route('login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        @if (Route::has('register'))
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-primary" href="{{ route('register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                        @endif
                         @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
-                                    <div class="d-flex align-items-center">
-                                        <div class="me-2">
-                                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; background: var(--gradient-primary);">
-                                                <span class="text-white fw-bold">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex flex-column">
-                                            <span class="fw-medium">{{ Auth::user()->name }}</span>
-                                            <small class="text-muted">Member</small>
-                                        </div>
-                                    </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <div class="px-3 py-2 mb-2 border-bottom">
-                                        <div class="fw-medium">{{ Auth::user()->name }}</div>
-                                        <small class="text-muted">{{ Auth::user()->email }}</small>
-                                    </div>
-                                    <a class="dropdown-item" href="{{ route('dashboard') }}">
-                                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('portfolios.index') }}">
-                                        <i class="fas fa-file-alt me-2"></i>My Portfolios
-                                    </a>
-                                    <a class="dropdown-item" href="{{ route('bookmarks.index') }}">
-                                        <i class="fas fa-bookmark me-2"></i>Bookmarks
-                                    </a>
-                                    {{-- <a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                        <i class="fas fa-user me-2"></i>Profile Settings
-                                    </a> --}}
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item text-danger" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a>
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <main>
-            <div class="container">
-                @if(session('success'))
-                    <div class="alert alert-success alert-dismissible fade show fade-in" role="alert">
-                        <i class="fas fa-check-circle me-2"></i>
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show fade-in" role="alert">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                @yield('content')
-            </div>
-        </main>
-
-        <footer class="app-footer">
-            <div class="container">
-                <div class="footer-content">
-                    <p>&copy; {{ date('Y') }} NextStep. All rights reserved.</p>
-                    <div class="footer-links">
-                        <a href="">Privacy Policy</a>
-                        <a href="">Terms of Service</a>
-                        <a href="">Contact</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+                        <li class="nav-item dropdown">
+                            <a id="navbarDropdown" class="nav-link dropdown-toggle d-flex align-items-center" 
+                            href="#" role="button" data-bs-toggle="dropdown">
+                            
+                           @if(Auth::user()->profile_photo_path)
+    <img src="{{ asset('storage/' . Auth::user()->profile_photo_path) }}"
+         class="rounded-circle me-2"
+         style="width: 32px; height: 32px; object-fit: cover;"
+         alt="{{ Auth::user()->name }}">
+@else
+    <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center me-2"
+         style="width: 32px; height: 32px;">
+         {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
     </div>
+@endif
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Initialize tooltips
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-            
-            // Add active state to current page in navbar
-            const currentPath = window.location.pathname;
-            document.querySelectorAll('.nav-link').forEach(link => {
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
+                        
+                        {{ Auth::user()->name }}
+                    </a>
+                    
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <div class="px-3 py-2 mb-2 border-bottom">
+                            <div class="fw-medium">{{ Auth::user()->name }}</div>
+                            <small class="text-muted">{{ Auth::user()->email }}</small>
+                        </div>
+                        <a class="dropdown-item" href="{{ route('dashboard') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a class="dropdown-item" href="{{ route('portfolios.index') }}">
+                            <i class="fas fa-file-alt me-2"></i>My Portfolios
+                        </a>
+                        <a class="dropdown-item" href="{{ route('bookmarks.index') }}">
+                            <i class="fas fa-bookmark me-2"></i>Bookmarks
+                        </a>
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}">
+                            <i class="fas fa-user me-2"></i>Profile Settings
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item text-danger" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </div>
+            </li>
+            @endguest
+        </ul>
+    </div>
+</div>
+</nav>
+
+<main>
+    <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show fade-in" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        
+        @if(session('error'))
+        <div class="alert alert-danger alert-dismissible fade show fade-in" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+        
+        @yield('content')
+    </div>
+</main>
+
+<footer class="app-footer">
+    <div class="container">
+        <div class="footer-content">
+            <p>&copy; {{ date('Y') }} NextStep. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="">Privacy Policy</a>
+                <a href="">Terms of Service</a>
+                <a href="">Contact</a>
+            </div>
+        </div>
+    </div>
+</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-
-        // Auto-dismiss alerts after 5 seconds
-        setTimeout(function() {
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                const bsAlert = new bootstrap.Alert(alert);
-                bsAlert.close();
-            });
-        }, 5000);
-    </script>
-    @stack('scripts')
+        
+        // Add active state to current page in navbar
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPath) {
+                link.classList.add('active');
+            }
+        });
+    });
+    
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+@stack('scripts')
 </body>
 </html>

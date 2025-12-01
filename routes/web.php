@@ -2,18 +2,19 @@
 // routes/web.php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PortfolioController;
-use App\Http\Controllers\ExperienceController;
-use App\Http\Controllers\EducationController;
 use App\Http\Controllers\SkillController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\SocialLinkController;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EducationController;
+use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\SocialLinkController;
+use App\Http\Controllers\LandingPageController;
 
 // Landing Page (Public)
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
@@ -30,20 +31,20 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('portfolios', PortfolioController::class);
     
     // Nested Portfolio Resources
-Route::prefix('portfolios/{portfolio}')->group(function () {
-    Route::resource('experiences', ExperienceController::class)->except(['index', 'show']);
-    Route::resource('educations', EducationController::class)->except(['index', 'show']);
-    Route::resource('skills', SkillController::class)->except(['index', 'show']);
-    Route::resource('projects', ProjectController::class)->except(['index', 'show']);
-    Route::resource('socials', SocialLinkController::class)->except(['index', 'show']);
-});
-
-// Individual resource routes for editing/deleting
-Route::resource('experiences', ExperienceController::class)->only(['edit', 'update', 'destroy']);
-Route::resource('educations', EducationController::class)->only(['edit', 'update', 'destroy']);
-Route::resource('skills', SkillController::class)->only(['edit', 'update', 'destroy']);
-Route::resource('projects', ProjectController::class)->only(['edit', 'update', 'destroy']);
-Route::resource('socials', SocialLinkController::class)->only(['edit', 'update', 'destroy']);
+    Route::prefix('portfolios/{portfolio}')->group(function () {
+        Route::resource('experiences', ExperienceController::class)->except(['index', 'show']);
+        Route::resource('educations', EducationController::class)->except(['index', 'show']);
+        Route::resource('skills', SkillController::class)->except(['index', 'show']);
+        Route::resource('projects', ProjectController::class)->except(['index', 'show']);
+        Route::resource('socials', SocialLinkController::class)->except(['index', 'show']);
+    });
+    
+    // Individual resource routes for editing/deleting
+    Route::resource('experiences', ExperienceController::class)->only(['edit', 'update', 'destroy']);
+    Route::resource('educations', EducationController::class)->only(['edit', 'update', 'destroy']);
+    Route::resource('skills', SkillController::class)->only(['edit', 'update', 'destroy']);
+    Route::resource('projects', ProjectController::class)->only(['edit', 'update', 'destroy']);
+    Route::resource('socials', SocialLinkController::class)->only(['edit', 'update', 'destroy']);
     
     // Academy
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
@@ -59,6 +60,20 @@ Route::resource('socials', SocialLinkController::class)->only(['edit', 'update',
     // Chatbot
     Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
     Route::post('/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.message');
+    
+    // Profile Routes
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+    });
+    
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'show'])->name('profile.show');
+        Route::get('/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/photo', [ProfileController::class, 'deleteProfilePhoto'])->name('profile.photo.delete');
+    });
 });
 
 // Redirect /home to /dashboard for logged-in users
