@@ -42,5 +42,3 @@ class Portfolio extends Model
         return $this->hasMany(SocialLink::class);
     }
 }
-
-// Create similar models for Experience, Education, Skill, Project, SocialLink, Course, Bookmark, Article

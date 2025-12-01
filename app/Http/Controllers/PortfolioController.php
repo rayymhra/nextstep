@@ -41,6 +41,9 @@ class PortfolioController extends Controller
     {
         $this->authorize('view', $portfolio);
         
+        // Load all relationships
+        $portfolio->load(['experiences', 'educations', 'skills', 'projects', 'socialLinks']);
+        
         return view('portfolios.show', compact('portfolio'));
     }
 

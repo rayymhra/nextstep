@@ -2,24 +2,26 @@
 // routes/web.php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SkillController;
-use App\Http\Controllers\CourseController;
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\ChatbotController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\EducationController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\EducationController;
+use App\Http\Controllers\SkillController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SocialLinkController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\BookmarkController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ChatbotController;
 
-Auth::routes();
+// Landing Page (Public)
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
-Route::get('/', function () {
-    return redirect('/dashboard');
-});
+// Authentication Routes
+Auth::routes(['register' => true]);
 
+// Authenticated Routes
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -28,11 +30,20 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('portfolios', PortfolioController::class);
     
     // Nested Portfolio Resources
-    Route::resource('portfolios.experiences', ExperienceController::class)->shallow();
-    Route::resource('portfolios.educations', EducationController::class)->shallow();
-    Route::resource('portfolios.skills', SkillController::class)->shallow();
-    Route::resource('portfolios.projects', ProjectController::class)->shallow();
-    Route::resource('portfolios.socials', SocialLinkController::class)->shallow();
+Route::prefix('portfolios/{portfolio}')->group(function () {
+    Route::resource('experiences', ExperienceController::class)->except(['index', 'show']);
+    Route::resource('educations', EducationController::class)->except(['index', 'show']);
+    Route::resource('skills', SkillController::class)->except(['index', 'show']);
+    Route::resource('projects', ProjectController::class)->except(['index', 'show']);
+    Route::resource('socials', SocialLinkController::class)->except(['index', 'show']);
+});
+
+// Individual resource routes for editing/deleting
+Route::resource('experiences', ExperienceController::class)->only(['edit', 'update', 'destroy']);
+Route::resource('educations', EducationController::class)->only(['edit', 'update', 'destroy']);
+Route::resource('skills', SkillController::class)->only(['edit', 'update', 'destroy']);
+Route::resource('projects', ProjectController::class)->only(['edit', 'update', 'destroy']);
+Route::resource('socials', SocialLinkController::class)->only(['edit', 'update', 'destroy']);
     
     // Academy
     Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
@@ -46,10 +57,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
     
     // Chatbot
-    Route::get('/chatbot', function () {
-        return view('chatbot.index');
-    })->name('chatbot');
-    
     Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
     Route::post('/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.message');
+});
+
+// Redirect /home to /dashboard for logged-in users
+Route::get('/home', function () {
+    return redirect()->route('dashboard');
 });

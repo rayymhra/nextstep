@@ -10,6 +10,8 @@ class SocialLink extends Model
 {
     use HasFactory;
 
+    protected $table = 'social_links'; // Add this line
+
     protected $fillable = [
         'portfolio_id',
         'platform',
@@ -20,4 +22,4 @@ class SocialLink extends Model
     {
         return $this->belongsTo(Portfolio::class);
     }
-}
+}   
