@@ -74,9 +74,16 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/photo', [ProfileController::class, 'deleteProfilePhoto'])->name('profile.photo.delete');
     });
+    
+    // Add rate limiting middleware
+    Route::middleware(['throttle:20,1'])->group(function () {
+        Route::get('/chatbot', [ChatbotController::class, 'index'])->name('chatbot');
+        Route::post('/chatbot/message', [ChatbotController::class, 'sendMessage'])->name('chatbot.message');
+    });
 });
 
 // Redirect /home to /dashboard for logged-in users
 Route::get('/home', function () {
     return redirect()->route('dashboard');
 });
+
